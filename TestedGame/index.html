@@ -9,9 +9,7 @@
 
 <script>
 
-    // import * as scene from "./phaser-arcade-physics.min";
-
-    var config = {
+    const config = {
         type: Phaser.AUTO,
         width: 1400,
         height: 734.5,
@@ -44,14 +42,14 @@
     var score;
     var y;
     var backgrounds;
-    var worldMove = 0;
+    let worldMove = 0;
     var timer;
 
     var platforms;
-    var platformsN = 8;
-    var platformLevels = 2;
-    var platformLocations = new Array();
-    var platformBodyLocations = new Array();
+    const platformsN = 8;
+    const platformLevels = 2;
+    const platformLocations = new Array();
+    const platformBodyLocations = new Array();
 
     var noGrounds;
 
@@ -61,7 +59,10 @@
         moveLeft: false,
         moveRight: false,
         jump: false,
+
     };
+    var ss;
+
     var nextPlatform = 1000;
 
     /////////////////////////////////////////////////////////////////////////////////////////
@@ -134,12 +135,11 @@
     }
 
 
-    function update(time) {
+    function update() {
 
         play();
 
-
-        xy.setText('X:' + this.input.mousePointer.x + "  Y:" + time, {
+        xy.setText('X:' + this.input.mousePointer.x + "  Y:" + this.input.mousePointer.y, {
             fontSize: '32px',
             fill: '#ffffff'
         });
@@ -172,11 +172,12 @@
             }
             if (cursors.up.isDown && mario.body.onFloor()) {
                 mario.move("up");
+                cursors.up.isDown = false;
+                player.jump = false;
             }
 
             if (player.jump) {
                 cursors.up.isDown = true;
-                timer = time;
             }
 
             if (player.moveLeft) {
@@ -186,14 +187,8 @@
             if (player.moveRight) {
                 cursors.right.isDown = true;
             }
-            if(time - 2000 > timer){
-                console.log("TIMER OFF");
-                cursors.up.isDown = false;
-                timer = 0;
-            }
 
         }
-
 
     }
 
@@ -215,7 +210,6 @@
 
     function generatePlatform() {
 
-
         for (var i = 0; i < platformsN; i++) {
             if (i < 4) {
                 var x = 600 + 256.4 * i;
@@ -227,7 +221,6 @@
             platformLocations[i * 2 + 1] = y;
             platforms.create(x, y, 'platform');
         }
-        // console.log(platformLocations.length);
 
         platforms.children.each(function (platform) {
             platform.setScale(1.9);
@@ -247,6 +240,7 @@
     }
 
     function generateStar() {
+
         var starsN = platformsN;
         for (var i = 0; i < starsN; i++) {
             var x = platformLocations[i * 2] + 35;
@@ -275,7 +269,6 @@
 
         mario.move = function (direction) {
             if (direction == "right") {
-                // player.jump = false;
                 if (worldMove > 0) {
                     platforms.children.each(function (platform) {
                         platform.body.x -= 5;
@@ -328,16 +321,14 @@
 
                     backgrounds.children.each(function (background) {
                         background.x += 5;
-                        // background.body.x -= 5;
                     });
+
                     noGrounds.children.each(function (noGround) {
                         noGround.x += 5;
                         noGround.body.x += 5;
                     });
                 }
             }
-
-            // console.log(nextPlatform);
 
             if (direction == "up") {
                 this.body.velocity.y = -900;
@@ -352,12 +343,11 @@
 
     function play() {
 
-        // player.moveRight = true;
-        if (nextPlatform < 260) {
+        player.moveRight = true;
+        if (nextPlatform < 330) {
             player.jump = true;
-            
-            console.log("JUMP!");
         }
+
 
     }
 
