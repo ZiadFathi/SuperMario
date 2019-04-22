@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="92a5ff0b-d228-4ecb-8621-0896d84061c6" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
@@ -15,64 +14,65 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FavoritesManager">
+    <favorites_list name="TestedGame" />
+  </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="290">
-              <caret line="319" lean-forward="true" selection-start-line="319" selection-end-line="319" />
+            <state relative-caret-position="409">
+              <caret line="327" column="36" lean-forward="true" selection-start-line="327" selection-start-column="36" selection-end-line="327" selection-end-column="36" />
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/phaser.js">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="187">
-              <caret line="11" column="33" selection-start-line="11" selection-start-column="33" selection-end-line="11" selection-end-column="33" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/game.js">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
     </leaf>
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>setvelo</find>
-      <find>coll</find>
-      <find>platform</find>
-      <find>star</find>
-      <find>up</find>
-      <find>platformN</find>
-      <find>platformLocations</find>
-      <find>mario</find>
-      <find />
-      <find>cursors</find>
-      <find>nextPlatform</find>
-      <find>console</find>
-      <find>player.j</find>
-      <find>time</find>
-      <find>xy</find>
-      <find>cons</find>
-      <find>var</find>
-      <find>conso</find>
-      <find>ss</find>
-      <find>noGroundLocations</find>
-      <find>player.jump</find>
       <find>255</find>
+      <find>marioY</find>
+      <find>marioX</find>
+      <find>xy</find>
+      <find>nextPlatform</find>
+      <find>generatep</find>
+      <find>nogr</find>
+      <find>next</find>
+      <find>start</find>
+      <find>nextsect</find>
+      <find>player.jump</find>
+      <find>250</find>
+      <find>mariox</find>
+      <find>nextse</find>
+      <find>worldMove</find>
+      <find>nextSection</find>
+      <find>generateStar</find>
+      <find>generatePlatform</find>
+      <find>stars</find>
+      <find>console.log</find>
+      <find>star</find>
+      <find>collect</find>
+      <find>[i]</find>
+      <find>obstacle</find>
+      <find>obstacles</find>
+      <find>4000</find>
+      <find>back</find>
+      <find>console</find>
+      <find>collectStar</find>
+      <find>platformLocations</find>
     </findStrings>
     <replaceStrings>
       <replace>const</replace>
+      <replace>center</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/index.html" root0="SKIP_INSPECTION" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
@@ -95,7 +95,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -107,6 +106,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -194,18 +194,39 @@
       <workItem from="1554758298308" duration="126000" />
       <workItem from="1554824537730" duration="581000" />
       <workItem from="1554848858782" duration="3430000" />
+      <workItem from="1554852318771" duration="217000" />
+      <workItem from="1554900553045" duration="1011000" />
+      <workItem from="1554967436463" duration="11822000" />
+      <workItem from="1555081301679" duration="6125000" />
+      <workItem from="1555345180872" duration="8718000" />
+      <workItem from="1555413728038" duration="14556000" />
+      <workItem from="1555622749842" duration="2599000" />
+      <workItem from="1555759206575" duration="1012000" />
+      <workItem from="1555767304805" duration="13378000" />
+      <workItem from="1555794058274" duration="4207000" />
+      <workItem from="1555848844360" duration="2638000" />
+      <workItem from="1555852435109" duration="630000" />
+      <workItem from="1555853170523" duration="7691000" />
     </task>
+    <task id="LOCAL-00001" summary="Jump on noGround">
+      <created>1554852395130</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1554852395130</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="142510000" />
+    <option name="totallyTimeSpent" value="217114000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="72" y="-7" width="1471" height="878" extended-state="6" />
+    <frame x="59" y="-7" width="1484" height="878" extended-state="6" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.16317992" />
-      <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info id="Favorites" order="2" side_tool="true" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49865952" visible="true" weight="0.16931583" />
+      <window_info id="Structure" order="1" sideWeight="0.5013405" side_tool="true" weight="0.16931583" />
+      <window_info id="Favorites" order="2" sideWeight="0.5013405" side_tool="true" weight="0.16931583" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3297587" />
@@ -226,6 +247,10 @@
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
   </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Jump on noGround" />
+    <option name="LAST_COMMIT_MESSAGE" value="Jump on noGround" />
+  </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Example3.js" />
     <entry file="file://$PROJECT_DIR$/Example1.js" />
@@ -234,13 +259,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="578">
           <caret line="6962" column="22" selection-start-line="6962" selection-start-column="15" selection-end-line="6962" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="290">
-          <caret line="319" lean-forward="true" selection-start-line="319" selection-end-line="319" />
         </state>
       </provider>
     </entry>
@@ -253,6 +271,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/game.js">
       <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external/lib.es5.d.ts">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="17">
+          <caret line="541" column="10" selection-start-line="541" selection-start-column="10" selection-end-line="541" selection-end-column="10" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/index.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="409">
+          <caret line="327" column="36" lean-forward="true" selection-start-line="327" selection-start-column="36" selection-end-line="327" selection-end-column="36" />
+        </state>
+      </provider>
     </entry>
   </component>
 </project>

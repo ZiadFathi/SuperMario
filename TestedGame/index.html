@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <script src="game.js"></script>
     <script src="phaser-arcade-physics.min.js"></script>
-
 </head>
+
 <body>
 
 <script>
@@ -20,6 +21,7 @@
             default: 'arcade',
             arcade: {
                 gravity: {y: 250},
+                debug: true,
             }
         },
         scene: {
@@ -38,22 +40,25 @@
     var mario;
     var xy;
     var stars;
+    var starsN = 0;
     var i = 0;
     var score;
-    var y;
+    // var y;
     var backgrounds;
     let worldMove = 0;
     var timer;
 
     var platforms;
-    const platformsN = 8;
+    var platformsN;
     const platformLevels = 2;
     const platformLocations = new Array();
     const platformBodyLocations = new Array();
+    var platformBodyHeight = new Array();
     var nextPlatform = 1000;
+    var nextPlatformHeight = 1000;
 
     var noGrounds;
-    var noGroundsN = 2;
+    var noGroundsN;
     var noGroundLocations = new Array();
     var nextNoGround = 2000;
 
@@ -65,8 +70,30 @@
         jump: false,
 
     };
-    // var ss;
 
+    class section {
+        constructor(center, end, type) {
+            this.center = center;
+            this.end = end;
+            this.type = type;
+            if (type == "platform") {
+                this.start = center - 75;
+            } else if (type == "noGround") {
+                this.start = center - 98;
+            }
+        }
+    }
+
+    var sections = new Array();
+    var totalSections;
+    var sectionsEnd = 542;
+    var sectionsStep = 256.4;
+    var tempNoGroundsN = 0;
+    var tempPlatformsN = 0;
+    var nextSection = 500;
+
+    var obstacles;
+    var obstaclesN = 0;
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -77,18 +104,25 @@
         this.load.image('platform', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
         this.load.image('noGround', 'assets/noGround.png');
+        this.load.image('obstacle', 'assets/Piranha Plant.png');
+        this.load.image('smallHill', 'assets/Hill - Small.png');
+        this.load.image('largeHill', 'assets/Hill - Large.png');
+        this.load.image('smallCloud', 'assets/Cloud - Single.png');
+        this.load.image('midCloud', 'assets/Cloud - Double.png');
+        this.load.image('largeCloud', 'assets/Cloud - Triple.png');
+
 
     }
 
     function create() {
 
-        this.physics.world.setBounds(-2000, 0, 6000, 613);
+        this.physics.world.setBounds(-10000, 0, 20000, 613);
 
         mario = this.physics.add.sprite(marioX, marioY, 'mario');
 
         noGrounds = this.physics.add.staticGroup();
 
-
+        obstacles = this.physics.add.group();
 
         backgrounds = this.add.group({
             key: 'sky',
@@ -100,24 +134,26 @@
             }
         });
 
-
         platforms = this.physics.add.staticGroup();
-
 
         stars = this.physics.add.group();
 
-
-        generatePlatform();
+        generateSections();
+        generatePlatforms();
         generateMario();
-        generateStar();
+        generateStarsAndObstacles();
         generateBackground();
-        generateNoGround();
+        generateNoGrounds();
+        // generateObstacles();
 
 
         this.physics.add.collider(mario, platforms);
         this.physics.add.collider(stars, platforms);
+        this.physics.add.collider(obstacles, platforms);
         this.physics.add.overlap(mario, stars, collectStar, null, this);
         this.physics.add.overlap(mario, noGrounds, fall, null, this);
+        this.physics.add.overlap(mario, obstacles, fall, null, this);
+
 
         cursors = this.input.keyboard.createCursorKeys();
         xy = this.add.text(16, 16, '', {fontSize: '32px', fill: '#ffffff'});
@@ -140,14 +176,7 @@
             fill: '#ffffff'
         });
 
-
-        stars.children.each(function (star) {
-            // star.setScale(0.12);
-            if (star.collideLeft) {
-                // console.log("LEFT");
-            }
-            // star.body.checkCollision.left = true;
-        });
+        marioY = mario.body.y;
 
         if (movement) {
 
@@ -159,7 +188,6 @@
             if (cursors.right.isDown) {
                 mario.move("right");
                 worldMove++;
-                // time.reset();
             }
             if (cursors.up.isDown && mario.body.onFloor()) {
                 mario.move("up");
@@ -169,6 +197,7 @@
 
             if (player.jump) {
                 cursors.up.isDown = true;
+                nextSection = 1000;
             }
 
             if (player.moveLeft) {
@@ -183,52 +212,84 @@
 
     }
 
-
     function collectStar(mario, star) {
+        console.log("HHHHHH");
         star.disableBody(true, true);
         i++;
     }
 
     function fall(mario, noGround) {
-        // console.log("TOUCH!");
         mario.body.collideWorldBounds = false;
         movement = false;
     }
 
-
     /////////////////// Generate Functions //////////////////////////////
 
-    function generateNoGround(){
 
-        for (var i = 0; i < noGroundsN; i++) {
-            var x = 990.5 + (64.1) * 13 + (64.1 * 25) * i;
-            noGroundLocations[i] = x - 103.8;
-            var y = 688;
-            noGrounds.create(x, y, 'noGround');
+    function generateSections() {
+
+        platformsN = Phaser.Math.Between(0, 10);
+        // platformsN = 5;
+        noGroundsN = Phaser.Math.Between(0, 10);
+        // noGroundsN = 4;
+        totalSections = platformsN + noGroundsN;
+
+        for (var i = 0; i < totalSections; i++) {
+            var type = Phaser.Math.Between(0, 1);
+            if (type == 0 && tempPlatformsN < platformsN || tempNoGroundsN == noGroundsN) {
+
+                sections.push(new section(sectionsEnd, sectionsEnd + sectionsStep, "platform"));
+                tempPlatformsN++;
+            } else if (tempNoGroundsN < noGroundsN || tempPlatformsN == platformsN) {
+                totalSections += 2;
+                i += 2;
+                sections.push(new section(sectionsEnd, sectionsEnd + sectionsStep, "empty"));
+                sectionsEnd += sectionsStep;
+                sections.push(new section(sectionsEnd, sectionsEnd + sectionsStep, "noGround"));
+                sectionsEnd += sectionsStep;
+                sections.push(new section(sectionsEnd, sectionsEnd + sectionsStep, "empty"));
+                tempNoGroundsN++;
+            }
+            sectionsEnd += sectionsStep;
+        }
+
+        console.log("PlatformsN: " + platformsN);
+        console.log("noGroundsN: " + noGroundsN);
+
+    }
+
+    function generateNoGrounds() {
+
+        for (var i = 0; i < sections.length; i++) {
+            if (sections[i].type == "noGround") {
+                var x = sections[i].center;
+                noGroundLocations[i] = x - 103.8;
+                var y = 688;
+                noGrounds.create(x, y, 'noGround');
+            }
         }
 
         noGrounds.children.each(function (noGround) {
             noGround.setSize(82, 120);
             noGround.setScale(0.96);
             noGround.body.x += 60;
-            // noGround.body.y = 612;
             noGround.setDepth(2);
         });
 
     }
 
-    function generatePlatform() {
+    function generatePlatforms() {
 
-        for (var i = 0; i < platformsN; i++) {
-            if (i < 4) {
-                var x = 600 + 256.4 * i;
-            } else {
-                var x = 600 + 384.6 + 64.1 * 2 + 256.4 * i;
+        for (var i = 0; i < totalSections; i++) {
+            if (sections[i].type == "platform") {
+                var x = sections[i].center - 33.75;
+                var y = 480 - 160 * Phaser.Math.Between(0, platformLevels - 1);
+                platformBodyHeight.push(y);
+                platformLocations.push(x);
+                // console.log(x);
+                platformLocations.push(y);
+                platforms.create(x, y, 'platform');
             }
-            var y = 480 - 80 * Phaser.Math.Between(0, platformLevels - 1);
-            platformLocations[i * 2] = x;
-            platformLocations[i * 2 + 1] = y;
-            platforms.create(x, y, 'platform');
         }
 
         platforms.children.each(function (platform) {
@@ -248,15 +309,34 @@
         });
     }
 
-    function generateStar() {
+    function generateStarsAndObstacles() {
 
-        var starsN = platformsN;
-        for (var i = 0; i < starsN; i++) {
-            var x = platformLocations[i * 2] + 35;
-            var y = (Phaser.Math.Between(0, 1) == 0) ? platformLocations[i * 2 + 1] - 50 : 750;
-            stars.create(x, y, 'star');
+
+        for (var i = 0; i < platformsN; i++) {
+            // console.log(platformLocations[i*2]);
+            var x = platformLocations[i*2] + 35;
+            // console.log(platformLocations[i]);
+            var flag = (Phaser.Math.Between(0, 1) == 0) ? true : false;
+            var y = (Phaser.Math.Between(0, 1) == 0) ? platformLocations[i * 2 + 1] - 100 : 700;
+            // var yy = 700;
+            if (flag) {
+                // console.log("xx: " + xx);
+                stars.create(x, y, 'star');
+                starsN++;
+            } else {
+                // console.log("xx: " + xx);
+                obstacles.create(x, y, 'obstacle');
+                obstaclesN++;
+            }
+            // console.log("X: " + x + "Y: " + y);
+
         }
+        console.log("STARS: " + starsN);
+        console.log("OBSTACLES: " + obstaclesN);
 
+        obstacles.children.each(function (obstacle) {
+            obstacle.body.collideWorldBounds = true;
+        });
 
         stars.children.each(function (star) {
             star.setScale(0.08);
@@ -279,8 +359,6 @@
         mario.move = function (direction) {
             if (direction == "right") {
 
-                console.log(nextNoGround);
-
                 if (worldMove > 0) {
                     platforms.children.each(function (platform) {
                         platform.body.x -= 5;
@@ -288,16 +366,19 @@
                     });
                     for (var i = 0; i < platformBodyLocations.length; i++) {
                         platformBodyLocations[i] -= 5;
-                        if (platformBodyLocations[i] > marioX && platformBodyLocations[i] - marioX < nextPlatform){
+                        if (platformBodyLocations[i] > marioX && platformBodyLocations[i] - marioX < nextPlatform) {
                             nextPlatform = platformBodyLocations[i];
-                        } else if(nextPlatform < 255){
-                            nextPlatform = 1000;
+                        } else if (nextPlatform < 390) {
+                            nextPlatform = 2000;
                         }
                     }
+
                     stars.children.each(function (star) {
                         star.x -= 5;
                         star.body.x -= 5;
+                        // console.log("STAR: " + star.x);
                     });
+
                     backgrounds.children.each(function (background) {
                         background.x -= 5;
                     });
@@ -307,14 +388,30 @@
                         noGround.body.x -= 5;
                     });
 
-                    for (var i=0; i<noGroundLocations.length; i++){
+                    obstacles.children.each(function (obstacle) {
+                        obstacle.x -= 5;
+                        obstacle.body.x -= 5;
+                        // console.log("OBSTACLE: " + obstacle.x);
+                    });
+
+                    for (var i = 0; i < noGroundLocations.length; i++) {
                         noGroundLocations[i] -= 5;
-                        if (noGroundLocations[i] > marioX && noGroundLocations[i] - marioX < nextNoGround){
+                        if (noGroundLocations[i] > marioX && noGroundLocations[i] - marioX < nextNoGround) {
                             nextNoGround = noGroundLocations[i];
-                        } else if(nextNoGround < 260){
+                        } else if (nextNoGround < 260) {
                             nextNoGround = 2000;
                         }
                     }
+
+                    for (var i = 0; i < sections.length; i++) {
+                        sections[i].center -= 5;
+                        sections[i].end -= 5;
+                        sections[i].start -= 5;
+                        if (sections[i].start < nextSection && sections[i].start > 300) {
+                            nextSection = sections[i].start;
+                        }
+                    }
+
                 }
             }
 
@@ -328,14 +425,25 @@
                         platformBodyLocations[i] += 5;
                         if (platformBodyLocations[i] > marioX && platformBodyLocations[i] - marioX < nextPlatform) {
                             nextPlatform = platformBodyLocations[i];
-                        } else if(nextPlatform < 255){
+                        } else if (nextPlatform < 390) {
                             nextPlatform = 1000;
                         }
 
                     }
+                    for (var i = 0; i < sections.length; i++) {
+                        sections[i].center += 5;
+                        sections[i].end += 5;
+                        sections[i].start += 5;
+                        if (sections[i].start < nextSection && sections[i].start > marioX) {
+                            nextSection = sections[i].start;
+                        } else if (nextSection < 300) {
+                            nextSection = 550;
+                        }
+                    }
                     stars.children.each(function (star) {
                         star.x += 5;
                         star.body.x += 5;
+                        // console.log("STAR: " + star.x);
                     });
 
                     backgrounds.children.each(function (background) {
@@ -345,6 +453,12 @@
                     noGrounds.children.each(function (noGround) {
                         noGround.x += 5;
                         noGround.body.x += 5;
+                    });
+
+                    obstacles.children.each(function (obstacle) {
+                        obstacle.x += 5;
+                        obstacle.body.x += 5;
+                        // console.log("OBSTACLE: " + obstacle.x);
                     });
                 }
             }
@@ -356,21 +470,11 @@
 
     }
 
-
     ////////////////////////////////////////     GAME FUNCTIONS      //////////////////////////////////////////////////////
 
-
     function play() {
-
-        player.moveRight = true;
-        if (nextPlatform < 330) {
-            player.jump = true;
-        }
-        if(nextNoGround < 280){
-            player.jump = true;
-        }
-
-
+        // console.log(stars.x);
+        // console.log(platformLocations)
     }
 
 
