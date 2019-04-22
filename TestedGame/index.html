@@ -104,12 +104,19 @@
     var marioPlatformCollision;
     var mainAudio;
 
+    var smallClouds;
+    var midClouds;
+    var largeClouds;
+    var totalClouds = 20;
+
     /////////////////////////////////////////////////////////////////////////////////////////
 
     function preload() {
 
+        this.load.image('marioFrames', 'assets/marioFrames.png');
+
         this.load.image('sky', 'assets/overworld_bg.png');
-        this.load.image('mario', 'assets/super_mario.png');
+        this.load.image('mario', 'assets/Mario - Walk1.png');
         this.load.image('platform', 'assets/platform.png');
         this.load.image('star', 'assets/star.png');
         this.load.image('noGround', 'assets/noGround.png');
@@ -136,6 +143,8 @@
 
         mario = this.physics.add.sprite(marioX, marioY, 'mario');
 
+
+
         noGrounds = this.physics.add.staticGroup();
 
         obstacles = this.physics.add.group();
@@ -143,6 +152,12 @@
         largeHills = this.physics.add.group();
 
         smallHills = this.physics.add.group();
+
+        smallClouds = this.physics.add.staticGroup();
+
+        midClouds = this.physics.add.staticGroup();
+
+        largeClouds = this.physics.add.staticGroup();
 
         backgrounds = this.add.group({
             key: 'sky',
@@ -165,6 +180,7 @@
         generateBackground();
         generateNoGrounds();
         generateHills();
+        generateClouds();
 
         // this.physics.add.collider(mario, platforms);
         marioPlatformCollision = this.physics.add.collider(mario, platforms);
@@ -239,6 +255,7 @@
     }
 
     function fall(mario, noGround) {
+        // player.jump = true;
         mario.body.collideWorldBounds = false;
         movement = false;
         this.physics.world.removeCollider(marioPlatformCollision);
@@ -251,9 +268,9 @@
 
     function generateSections() {
 
-        platformsN = Phaser.Math.Between(0, 10);
+        platformsN = Phaser.Math.Between(0, 15);
         // platformsN = 5;
-        noGroundsN = Phaser.Math.Between(0, 10);
+        noGroundsN = Phaser.Math.Between(0, 8);
         // noGroundsN = 4;
         totalSections = platformsN + noGroundsN;
 
@@ -287,8 +304,8 @@
             if (sections[i].type == "empty" || sections[i].type == "platform") {
                 var hillX = sections[i].center;
                 var hillY = 520;
-                var sHill = Phaser.Math.Between(0, 1);
-                var lHill = Phaser.Math.Between(0, 1);
+                var sHill = Phaser.Math.Between(0, 3);
+                var lHill = Phaser.Math.Between(0, 3);
                 if (sHill == 0) {
                     smallHills.create(hillX + 30, hillY, 'smallHill');
                 }
@@ -303,11 +320,45 @@
         smallHills.children.each(function (smallHill) {
             smallHill.body.collideWorldBounds = true;
             smallHill.setDepth(0);
+            // smallHill.setScale(2);
         });
         largeHills.children.each(function (largeHill) {
             largeHill.body.collideWorldBounds = true;
+            // largeHill.setScale(2);
             largeHill.setDepth(0);
         });
+
+    }
+
+    function generateClouds() {
+
+        for (var i = 0; i < totalSections; i++) {
+            var randomX = Phaser.Math.Between(0, 2);
+            var randomY = Phaser.Math.Between(0, 2);
+            var randomCloud = Phaser.Math.Between(0, 2);
+            var x;
+            var y;
+            if (randomX == 0)
+                x = sections[i].center;
+            else if (randomX == 1)
+                x = sections[i].center + 50;
+            else
+                x = sections[i].center + 100;
+
+            if (randomY == 0)
+                y = 100;
+            else if (randomY == 1)
+                y = 150;
+            else
+                y = 200;
+
+            if (randomCloud == 0)
+                smallClouds.create(x, y, 'smallCloud');
+            else if (randomCloud == 1)
+                midClouds.create(x, y, 'midCloud');
+            else
+                largeClouds.create(x, y, 'largeCloud');
+        }
 
     }
 
@@ -369,9 +420,9 @@
 
             var x = platformLocations[i * 2] + 35;
             var flag = (Phaser.Math.Between(0, 1) == 0) ? true : false;
-            for(var j=0; j<totalSections; j++){
-                if(sections[j].center > x - 50 || sections[j].center < x + 50){
-                    if(flag) sections[j].carried = "star";
+            for (var j = 0; j < totalSections; j++) {
+                if (sections[j].center > x - 50 || sections[j].center < x + 50) {
+                    if (flag) sections[j].carried = "star";
                     else sections[j].carried = "obstacle";
                 }
             }
@@ -408,8 +459,9 @@
 
     function generateMario() {
 
-        mario.setSize(210, 250);
-        mario.setScale(0.28);
+        // mario.setSize(210, 250);
+        mario.setScale(2);
+        // mario.setScale(0.28);
         mario.body.gravity.y = 2000;
         mario.body.bounce.y = 0.1;
         mario.body.collideWorldBounds = true;
@@ -464,6 +516,22 @@
                         largeHill.x -= 5;
                         largeHill.body.x -= 5;
                     });
+
+                   smallClouds.children.each(function (smallCloud) {
+                       smallCloud.x -= 5;
+                       smallCloud.body.x -= 5;
+                    });
+
+                   midClouds.children.each(function (midCloud) {
+                       midCloud.x -= 5;
+                       midCloud.body.x -= 5;
+                    });
+
+                   largeClouds.children.each(function (largeCloud) {
+                       largeCloud.x -= 5;
+                       largeCloud.body.x -= 5;
+                    });
+
 
                     for (var i = 0; i < noGroundLocations.length; i++) {
                         noGroundLocations[i] -= 5;
@@ -541,6 +609,22 @@
                         largeHill.x += 5;
                         largeHill.body.x += 5;
                     });
+
+                    smallClouds.children.each(function (smallCloud) {
+                        smallCloud.x += 5;
+                        smallCloud.body.x += 5;
+                    });
+
+                    midClouds.children.each(function (midCloud) {
+                        midCloud.x += 5;
+                        midCloud.body.x += 5;
+                    });
+
+                    largeClouds.children.each(function (largeCloud) {
+                        largeCloud.x += 5;
+                        largeCloud.body.x += 5;
+                    });
+
 
                 }
             }
