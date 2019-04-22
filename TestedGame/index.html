@@ -21,7 +21,7 @@
             default: 'arcade',
             arcade: {
                 gravity: {y: 250},
-                debug: true,
+                // debug: true,
             }
         },
         scene: {
@@ -76,11 +76,12 @@
             this.center = center;
             this.end = end;
             this.type = type;
-            if (type == "platform") {
+            if (type == "platform" || type == "empty") {
                 this.start = center - 75;
             } else if (type == "noGround") {
                 this.start = center - 98;
             }
+            this.carried;
         }
     }
 
@@ -94,6 +95,14 @@
 
     var obstacles;
     var obstaclesN = 0;
+
+    var largeHills;
+    var smallHills;
+    var largeHillsN = 20;
+    var smallHillsN = 20;
+
+    var marioPlatformCollision;
+    var mainAudio;
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -110,19 +119,30 @@
         this.load.image('smallCloud', 'assets/Cloud - Single.png');
         this.load.image('midCloud', 'assets/Cloud - Double.png');
         this.load.image('largeCloud', 'assets/Cloud - Triple.png');
+        this.load.audio('mainAudio', 'assets/mainAudio.mp3', {
+            instances: 1
+        });
 
 
     }
 
     function create() {
 
-        this.physics.world.setBounds(-10000, 0, 20000, 613);
+        this.physics.world.setBounds(-10000, 0, 20000, 615);
+
+        mainAudio = this.sound.add('mainAudio');
+
+        this.sound.play('mainAudio');
 
         mario = this.physics.add.sprite(marioX, marioY, 'mario');
 
         noGrounds = this.physics.add.staticGroup();
 
         obstacles = this.physics.add.group();
+
+        largeHills = this.physics.add.group();
+
+        smallHills = this.physics.add.group();
 
         backgrounds = this.add.group({
             key: 'sky',
@@ -144,10 +164,10 @@
         generateStarsAndObstacles();
         generateBackground();
         generateNoGrounds();
-        // generateObstacles();
+        generateHills();
 
-
-        this.physics.add.collider(mario, platforms);
+        // this.physics.add.collider(mario, platforms);
+        marioPlatformCollision = this.physics.add.collider(mario, platforms);
         this.physics.add.collider(stars, platforms);
         this.physics.add.collider(obstacles, platforms);
         this.physics.add.overlap(mario, stars, collectStar, null, this);
@@ -221,6 +241,9 @@
     function fall(mario, noGround) {
         mario.body.collideWorldBounds = false;
         movement = false;
+        this.physics.world.removeCollider(marioPlatformCollision);
+        mainAudio.pause();
+
     }
 
     /////////////////// Generate Functions //////////////////////////////
@@ -255,6 +278,36 @@
 
         console.log("PlatformsN: " + platformsN);
         console.log("noGroundsN: " + noGroundsN);
+
+    }
+
+    function generateHills() {
+
+        for (var i = 0; i < totalSections; i++) {
+            if (sections[i].type == "empty" || sections[i].type == "platform") {
+                var hillX = sections[i].center;
+                var hillY = 520;
+                var sHill = Phaser.Math.Between(0, 1);
+                var lHill = Phaser.Math.Between(0, 1);
+                if (sHill == 0) {
+                    smallHills.create(hillX + 30, hillY, 'smallHill');
+                }
+                if (lHill == 0) {
+                    largeHills.create(hillX - 30, hillY, 'largeHill');
+                }
+
+            }
+
+        }
+
+        smallHills.children.each(function (smallHill) {
+            smallHill.body.collideWorldBounds = true;
+            smallHill.setDepth(0);
+        });
+        largeHills.children.each(function (largeHill) {
+            largeHill.body.collideWorldBounds = true;
+            largeHill.setDepth(0);
+        });
 
     }
 
@@ -313,10 +366,16 @@
 
 
         for (var i = 0; i < platformsN; i++) {
-            // console.log(platformLocations[i*2]);
-            var x = platformLocations[i*2] + 35;
-            // console.log(platformLocations[i]);
+
+            var x = platformLocations[i * 2] + 35;
             var flag = (Phaser.Math.Between(0, 1) == 0) ? true : false;
+            for(var j=0; j<totalSections; j++){
+                if(sections[j].center > x - 50 || sections[j].center < x + 50){
+                    if(flag) sections[j].carried = "star";
+                    else sections[j].carried = "obstacle";
+                }
+            }
+
             var y = (Phaser.Math.Between(0, 1) == 0) ? platformLocations[i * 2 + 1] - 100 : 700;
             // var yy = 700;
             if (flag) {
@@ -336,11 +395,13 @@
 
         obstacles.children.each(function (obstacle) {
             obstacle.body.collideWorldBounds = true;
+            obstacle.setDepth(1);
         });
 
         stars.children.each(function (star) {
             star.setScale(0.08);
             star.body.collideWorldBounds = true;
+            star.setDepth(1);
         });
 
     }
@@ -392,6 +453,16 @@
                         obstacle.x -= 5;
                         obstacle.body.x -= 5;
                         // console.log("OBSTACLE: " + obstacle.x);
+                    });
+
+                    smallHills.children.each(function (smallHill) {
+                        smallHill.x -= 5;
+                        smallHill.body.x -= 5;
+                    });
+
+                    largeHills.children.each(function (largeHill) {
+                        largeHill.x -= 5;
+                        largeHill.body.x -= 5;
                     });
 
                     for (var i = 0; i < noGroundLocations.length; i++) {
@@ -460,6 +531,17 @@
                         obstacle.body.x += 5;
                         // console.log("OBSTACLE: " + obstacle.x);
                     });
+
+                    smallHills.children.each(function (smallHill) {
+                        smallHill.x += 5;
+                        smallHill.body.x += 5;
+                    });
+
+                    largeHills.children.each(function (largeHill) {
+                        largeHill.x += 5;
+                        largeHill.body.x += 5;
+                    });
+
                 }
             }
 

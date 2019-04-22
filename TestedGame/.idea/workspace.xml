@@ -22,8 +22,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="409">
-              <caret line="327" column="36" lean-forward="true" selection-start-line="327" selection-start-column="36" selection-end-line="327" selection-end-column="36" />
+            <state relative-caret-position="205">
+              <caret line="244" column="23" selection-start-line="244" selection-start-column="23" selection-end-line="244" selection-end-column="23" />
             </state>
           </provider>
         </entry>
@@ -32,10 +32,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>255</find>
-      <find>marioY</find>
-      <find>marioX</find>
-      <find>xy</find>
       <find>nextPlatform</find>
       <find>generatep</find>
       <find>nogr</find>
@@ -56,12 +52,16 @@
       <find>collect</find>
       <find>[i]</find>
       <find>obstacle</find>
-      <find>obstacles</find>
       <find>4000</find>
       <find>back</find>
       <find>console</find>
       <find>collectStar</find>
+      <find>obstacles</find>
+      <find>this.physics.world</find>
+      <find>section</find>
+      <find>hill</find>
       <find>platformLocations</find>
+      <find>fall</find>
     </findStrings>
     <replaceStrings>
       <replace>const</replace>
@@ -95,6 +95,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -106,7 +107,6 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -207,6 +207,7 @@
       <workItem from="1555848844360" duration="2638000" />
       <workItem from="1555852435109" duration="630000" />
       <workItem from="1555853170523" duration="7691000" />
+      <workItem from="1555891967843" duration="7941000" />
     </task>
     <task id="LOCAL-00001" summary="Jump on noGround">
       <created>1554852395130</created>
@@ -215,14 +216,22 @@
       <option name="project" value="LOCAL" />
       <updated>1554852395130</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Adding obstacles and removing movement to be updated later">
+      <created>1555892231665</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1555892231665</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="217114000" />
+    <option name="totallyTimeSpent" value="225055000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="59" y="-7" width="1484" height="878" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49865952" visible="true" weight="0.16931583" />
       <window_info id="Structure" order="1" sideWeight="0.5013405" side_tool="true" weight="0.16931583" />
@@ -249,7 +258,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Jump on noGround" />
-    <option name="LAST_COMMIT_MESSAGE" value="Jump on noGround" />
+    <MESSAGE value="Adding obstacles and removing movement to be updated later" />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding obstacles and removing movement to be updated later" />
   </component>
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/Example3.js" />
@@ -281,8 +291,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="409">
-          <caret line="327" column="36" lean-forward="true" selection-start-line="327" selection-start-column="36" selection-end-line="327" selection-end-column="36" />
+        <state relative-caret-position="205">
+          <caret line="244" column="23" selection-start-line="244" selection-start-column="23" selection-end-line="244" selection-end-column="23" />
         </state>
       </provider>
     </entry>
