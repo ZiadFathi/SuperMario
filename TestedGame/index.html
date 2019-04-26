@@ -43,7 +43,6 @@
     var starsN = 0;
     var i = 0;
     var score;
-    // var y;
     var backgrounds;
     let worldMove = 0;
     var timer;
@@ -103,11 +102,19 @@
 
     var marioPlatformCollision;
     var mainAudio;
+    var gameOverAudio;
+    var jumpAudio;
+    var coinAudio;
+    var winAudio;
 
     var smallClouds;
     var midClouds;
     var largeClouds;
     var totalClouds = 20;
+
+    var castle;
+
+    var oneTimeUpdateFlag = true;
 
     /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -116,8 +123,10 @@
         this.load.image('marioFrames', 'assets/marioFrames.png');
 
         this.load.image('sky', 'assets/overworld_bg.png');
-        this.load.image('mario', 'assets/Mario - Walk1.png');
+        this.load.image('mario', 'assets/super_mario.png');
+        // this.load.image('mario', 'assets/Mario - Walk1.png');
         this.load.image('platform', 'assets/platform.png');
+        this.load.image('castle', 'assets/castle.png');
         this.load.image('star', 'assets/star.png');
         this.load.image('noGround', 'assets/noGround.png');
         this.load.image('obstacle', 'assets/Piranha Plant.png');
@@ -129,6 +138,18 @@
         this.load.audio('mainAudio', 'assets/mainAudio.mp3', {
             instances: 1
         });
+        this.load.audio('gameOverAudio', 'assets/gameOver.mp3', {
+            instances: 1
+        });
+        this.load.audio('coinAudio', 'assets/coin.mp3', {
+            instances: 1
+        });
+        this.load.audio('jumpAudio', 'assets/jump.mp3', {
+            instances: 1
+        });
+        this.load.audio('winAudio', 'assets/win.mp3', {
+            instances: 1
+        });
 
 
     }
@@ -137,13 +158,33 @@
 
         this.physics.world.setBounds(-10000, 0, 20000, 615);
 
-        mainAudio = this.sound.add('mainAudio');
+        mainAudio = this.sound.add('mainAudio', {
+            volume: 3,
+            loop: true,
+        });
 
-        this.sound.play('mainAudio');
+        winAudio = this.sound.add('winAudio', {
+            volume: 3,
+            loop: false,
+        });
+
+        gameOverAudio = this.sound.add('gameOverAudio');
+
+        jumpAudio = this.sound.add('jumpAudio', {
+            volume: 1,
+        });
+
+        coinAudio = this.sound.add('coinAudio', {
+            volume: 1,
+        });
+
+        mainAudio.play();
+
+        // var timedEvent = this.time.delayedCall(3000,onEvent, [], this);
 
         mario = this.physics.add.sprite(marioX, marioY, 'mario');
 
-
+        castle = this.physics.add.sprite(sectionsEnd + 400, 100, 'castle');
 
         noGrounds = this.physics.add.staticGroup();
 
@@ -181,6 +222,7 @@
         generateNoGrounds();
         generateHills();
         generateClouds();
+        generateCastle();
 
         // this.physics.add.collider(mario, platforms);
         marioPlatformCollision = this.physics.add.collider(mario, platforms);
@@ -197,10 +239,21 @@
 
     }
 
+    function onEvent() {
+        player.jump = true;
+    }
 
     function update() {
 
         play();
+
+        if (oneTimeUpdateFlag) {
+
+            castle.x = sectionsEnd + 400;
+            castle.y = 100;
+
+            oneTimeUpdateFlag = false;
+        }
 
         xy.setText('X:' + this.input.mousePointer.x + "  Y:" + this.input.mousePointer.y, {
             fontSize: '32px',
@@ -252,6 +305,7 @@
         console.log("HHHHHH");
         star.disableBody(true, true);
         i++;
+        coinAudio.play();
     }
 
     function fall(mario, noGround) {
@@ -259,7 +313,8 @@
         mario.body.collideWorldBounds = false;
         movement = false;
         this.physics.world.removeCollider(marioPlatformCollision);
-        mainAudio.pause();
+        mainAudio.stop();
+        gameOverAudio.play();
 
     }
 
@@ -268,9 +323,9 @@
 
     function generateSections() {
 
-        platformsN = Phaser.Math.Between(0, 15);
+        platformsN = Phaser.Math.Between(10, 15);
         // platformsN = 5;
-        noGroundsN = Phaser.Math.Between(0, 8);
+        noGroundsN = Phaser.Math.Between(3, 5);
         // noGroundsN = 4;
         totalSections = platformsN + noGroundsN;
 
@@ -291,6 +346,11 @@
                 tempNoGroundsN++;
             }
             sectionsEnd += sectionsStep;
+
+            if (i == totalSections) {
+                // castle.x = sectionsEnd + 400;
+                // castle.y = 300;
+            }
         }
 
         console.log("PlatformsN: " + platformsN);
@@ -327,6 +387,14 @@
             // largeHill.setScale(2);
             largeHill.setDepth(0);
         });
+
+    }
+
+    function generateCastle() {
+
+        castle.body.collideWorldBounds = true;
+
+        castle.setDepth(2);
 
     }
 
@@ -460,8 +528,8 @@
     function generateMario() {
 
         // mario.setSize(210, 250);
-        mario.setScale(2);
-        // mario.setScale(0.28);
+        // mario.setScale(2);
+        mario.setScale(0.28);
         mario.body.gravity.y = 2000;
         mario.body.bounce.y = 0.1;
         mario.body.collideWorldBounds = true;
@@ -471,6 +539,15 @@
 
         mario.move = function (direction) {
             if (direction == "right") {
+
+                // castle = this.physics.add.sprite(sectionsEnd + 400,100,'castle');
+
+                if (marioX > castle.x) {
+                    movement = false;
+                    mainAudio.stop();
+                    winAudio.play();
+
+                }
 
                 if (worldMove > 0) {
                     platforms.children.each(function (platform) {
@@ -489,7 +566,6 @@
                     stars.children.each(function (star) {
                         star.x -= 5;
                         star.body.x -= 5;
-                        // console.log("STAR: " + star.x);
                     });
 
                     backgrounds.children.each(function (background) {
@@ -517,20 +593,23 @@
                         largeHill.body.x -= 5;
                     });
 
-                   smallClouds.children.each(function (smallCloud) {
-                       smallCloud.x -= 5;
-                       smallCloud.body.x -= 5;
+                    smallClouds.children.each(function (smallCloud) {
+                        smallCloud.x -= 5;
+                        smallCloud.body.x -= 5;
                     });
 
-                   midClouds.children.each(function (midCloud) {
-                       midCloud.x -= 5;
-                       midCloud.body.x -= 5;
+                    midClouds.children.each(function (midCloud) {
+                        midCloud.x -= 5;
+                        midCloud.body.x -= 5;
                     });
 
-                   largeClouds.children.each(function (largeCloud) {
-                       largeCloud.x -= 5;
-                       largeCloud.body.x -= 5;
+                    largeClouds.children.each(function (largeCloud) {
+                        largeCloud.x -= 5;
+                        largeCloud.body.x -= 5;
                     });
+
+                    castle.x -= 5;
+                    castle.body.x -= 5;
 
 
                     for (var i = 0; i < noGroundLocations.length; i++) {
@@ -582,7 +661,6 @@
                     stars.children.each(function (star) {
                         star.x += 5;
                         star.body.x += 5;
-                        // console.log("STAR: " + star.x);
                     });
 
                     backgrounds.children.each(function (background) {
@@ -597,7 +675,6 @@
                     obstacles.children.each(function (obstacle) {
                         obstacle.x += 5;
                         obstacle.body.x += 5;
-                        // console.log("OBSTACLE: " + obstacle.x);
                     });
 
                     smallHills.children.each(function (smallHill) {
@@ -625,12 +702,22 @@
                         largeCloud.body.x += 5;
                     });
 
+                    castle.x += 5;
+                    castle.body.x += 5;
 
                 }
             }
 
             if (direction == "up") {
+                // this.time.addEvent({
+                //     delay: 500,
+                //     callback: ()=>{
+                //         // spawn a new apple
+                //     },
+                //     loop: true
+                // });
                 this.body.velocity.y = -900;
+                jumpAudio.play();
             }
         };
 
@@ -639,8 +726,7 @@
     ////////////////////////////////////////     GAME FUNCTIONS      //////////////////////////////////////////////////////
 
     function play() {
-        // console.log(stars.x);
-        // console.log(platformLocations)
+
     }
 
 
