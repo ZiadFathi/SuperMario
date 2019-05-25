@@ -3,7 +3,7 @@
 
 <head>
     <script src="game.js"></script>
-    <script src="phaser-arcade-physics.min.js"></script>
+    <script src="phaser.js"></script>
 </head>
 
 <body>
@@ -14,6 +14,7 @@
         type: Phaser.AUTO,
         width: 1400,
         height: 734.5,
+        active: false,
         time: {
             desiredFPS: 60
         },
@@ -21,7 +22,7 @@
             default: 'arcade',
             arcade: {
                 gravity: {y: 250},
-                // debug: true,
+                debug: true,
             }
         },
         scene: {
@@ -44,7 +45,7 @@
     var i = 0;
     var score;
     var backgrounds;
-    let worldMove = 0;
+    // let worldMove = 0;
     var timer;
 
     var platforms;
@@ -101,11 +102,11 @@
     var smallHillsN = 20;
 
     var marioPlatformCollision;
-    var mainAudio;
-    var gameOverAudio;
-    var jumpAudio;
-    var coinAudio;
-    var winAudio;
+    // var mainAudio;
+    // var gameOverAudio;
+    // var jumpAudio;
+    // var coinAudio;
+    // var winAudio;
 
     var smallClouds;
     var midClouds;
@@ -127,7 +128,7 @@
         // this.load.image('mario', 'assets/Mario - Walk1.png');
         this.load.image('platform', 'assets/platform.png');
         this.load.image('castle', 'assets/castle.png');
-        this.load.image('star', 'assets/star.png');
+        this.load.image('star', './assets/star.png');
         this.load.image('noGround', 'assets/noGround.png');
         this.load.image('obstacle', 'assets/Piranha Plant.png');
         this.load.image('smallHill', 'assets/Hill - Small.png');
@@ -135,21 +136,21 @@
         this.load.image('smallCloud', 'assets/Cloud - Single.png');
         this.load.image('midCloud', 'assets/Cloud - Double.png');
         this.load.image('largeCloud', 'assets/Cloud - Triple.png');
-        this.load.audio('mainAudio', 'assets/mainAudio.mp3', {
-            instances: 1
-        });
-        this.load.audio('gameOverAudio', 'assets/gameOver.mp3', {
-            instances: 1
-        });
-        this.load.audio('coinAudio', 'assets/coin.mp3', {
-            instances: 1
-        });
-        this.load.audio('jumpAudio', 'assets/jump.mp3', {
-            instances: 1
-        });
-        this.load.audio('winAudio', 'assets/win.mp3', {
-            instances: 1
-        });
+        // this.load.audio('mainAudio', 'assets/mainAudio.mp3', {
+        //     instances: 1
+        // });
+        // this.load.audio('gameOverAudio', 'assets/gameOver.mp3', {
+        //     instances: 1
+        // });
+        // this.load.audio('coinAudio', 'assets/coin.mp3', {
+        //     instances: 1
+        // });
+        // this.load.audio('jumpAudio', 'assets/jump.mp3', {
+        //     instances: 1
+        // });
+        // this.load.audio('winAudio', 'assets/win.mp3', {
+        //     instances: 1
+        // });
 
 
     }
@@ -158,33 +159,33 @@
 
         this.physics.world.setBounds(-10000, 0, 20000, 615);
 
-        mainAudio = this.sound.add('mainAudio', {
-            volume: 3,
-            loop: true,
-        });
-
-        winAudio = this.sound.add('winAudio', {
-            volume: 3,
-            loop: false,
-        });
-
-        gameOverAudio = this.sound.add('gameOverAudio');
-
-        jumpAudio = this.sound.add('jumpAudio', {
-            volume: 1,
-        });
-
-        coinAudio = this.sound.add('coinAudio', {
-            volume: 1,
-        });
-
-        mainAudio.play();
+        // mainAudio = this.sound.add('mainAudio', {
+        //     volume: 3,
+        //     loop: true,
+        // });
+        //
+        // winAudio = this.sound.add('winAudio', {
+        //     volume: 3,
+        //     loop: false,
+        // });
+        //
+        // gameOverAudio = this.sound.add('gameOverAudio');
+        //
+        // jumpAudio = this.sound.add('jumpAudio', {
+        //     volume: 1,
+        // });
+        //
+        // coinAudio = this.sound.add('coinAudio', {
+        //     volume: 1,
+        // });
+        //
+        // mainAudio.play();
 
         // var timedEvent = this.time.delayedCall(3000,onEvent, [], this);
 
         mario = this.physics.add.sprite(marioX, marioY, 'mario');
 
-        castle = this.physics.add.sprite(sectionsEnd + 400, 100, 'castle');
+        castle = this.physics.add.staticSprite(sectionsEnd + 400, 430, 'castle');
 
         noGrounds = this.physics.add.staticGroup();
 
@@ -212,7 +213,7 @@
 
         platforms = this.physics.add.staticGroup();
 
-        stars = this.physics.add.group();
+        stars = this.physics.add.staticGroup();
 
         generateSections();
         generatePlatforms();
@@ -271,12 +272,12 @@
 
             if (cursors.left.isDown) {
                 mario.move("left");
-                if (worldMove > 0)
-                    worldMove--;
+                // if (worldMove > 0)
+                //     worldMove--;
             }
             if (cursors.right.isDown) {
                 mario.move("right");
-                worldMove++;
+                // worldMove++;
             }
             if (cursors.up.isDown && mario.body.onFloor()) {
                 mario.move("up");
@@ -302,10 +303,10 @@
     }
 
     function collectStar(mario, star) {
-        console.log("HHHHHH");
+        // console.log("HHHHHH");
         star.disableBody(true, true);
         i++;
-        coinAudio.play();
+        // coinAudio.play();
     }
 
     function fall(mario, noGround) {
@@ -313,8 +314,9 @@
         mario.body.collideWorldBounds = false;
         movement = false;
         this.physics.world.removeCollider(marioPlatformCollision);
-        mainAudio.stop();
-        gameOverAudio.play();
+        // worldMove = 0;
+        // mainAudio.stop();
+        // gameOverAudio.play();
 
     }
 
@@ -519,6 +521,12 @@
 
         stars.children.each(function (star) {
             star.setScale(0.08);
+            star.setDisplayOrigin(3800,3800);
+            star.body.setSize(40,40);
+            star.body.x += 280;
+            star.x += 280;
+            star.body.y += 343;
+            star.y += 343;
             star.body.collideWorldBounds = true;
             star.setDepth(1);
         });
@@ -544,12 +552,12 @@
 
                 if (marioX > castle.x) {
                     movement = false;
-                    mainAudio.stop();
-                    winAudio.play();
+                    // mainAudio.stop();
+                    // winAudio.play();
 
                 }
 
-                if (worldMove > 0) {
+                // if (worldMove > 0) {
                     platforms.children.each(function (platform) {
                         platform.body.x -= 5;
                         platform.x -= 5;
@@ -630,11 +638,11 @@
                         }
                     }
 
-                }
+                // }
             }
 
             if (direction == "left") {
-                if (worldMove > 0) {
+                // if (worldMove > 0) {
                     platforms.children.each(function (platform) {
                         platform.body.x += 5;
                         platform.x += 5;
@@ -705,7 +713,7 @@
                     castle.x += 5;
                     castle.body.x += 5;
 
-                }
+                // }
             }
 
             if (direction == "up") {
@@ -717,7 +725,7 @@
                 //     loop: true
                 // });
                 this.body.velocity.y = -900;
-                jumpAudio.play();
+                // jumpAudio.play();
             }
         };
 
@@ -727,10 +735,111 @@
 
     function play() {
 
+        // movement = true;
+        // cursors.right.isDown = true;
+    }
+
+    function moveRight(step){
+
+        step = step*64;
+
+        if (marioX > castle.x) {
+            movement = false;
+            // mainAudio.stop();
+            // winAudio.play();
+
+        }
+
+        // if (worldMove > 0) {
+            platforms.children.each(function (platform) {
+                platform.body.x -= step;
+                platform.x -= step;
+            });
+            for (var i = 0; i < platformBodyLocations.length; i++) {
+                platformBodyLocations[i] -= step;
+                if (platformBodyLocations[i] > marioX && platformBodyLocations[i] - marioX < nextPlatform) {
+                    nextPlatform = platformBodyLocations[i];
+                } else if (nextPlatform < 390) {
+                    nextPlatform = 2000;
+                }
+            }
+
+            stars.children.each(function (star) {
+                star.x -= step;
+                star.body.x -= step;
+            });
+
+            backgrounds.children.each(function (background) {
+                background.x -= step;
+            });
+
+            noGrounds.children.each(function (noGround) {
+                noGround.x -= step;
+                noGround.body.x -= step;
+            });
+
+            obstacles.children.each(function (obstacle) {
+                obstacle.x -= step;
+                obstacle.body.x -= step;
+                // console.log("OBSTACLE: " + obstacle.x);
+            });
+
+            smallHills.children.each(function (smallHill) {
+                smallHill.x -= step;
+                smallHill.body.x -= step;
+            });
+
+            largeHills.children.each(function (largeHill) {
+                largeHill.x -= step;
+                largeHill.body.x -= step;
+            });
+
+            smallClouds.children.each(function (smallCloud) {
+                smallCloud.x -= step;
+                smallCloud.body.x -= step;
+            });
+
+            midClouds.children.each(function (midCloud) {
+                midCloud.x -= step;
+                midCloud.body.x -= step;
+            });
+
+            largeClouds.children.each(function (largeCloud) {
+                largeCloud.x -= step;
+                largeCloud.body.x -= step;
+            });
+
+            castle.x -= step;
+            castle.body.x -= step;
+
+
+            for (i = 0; i < noGroundLocations.length; i++) {
+                noGroundLocations[i] -= step;
+                if (noGroundLocations[i] > marioX && noGroundLocations[i] - marioX < nextNoGround) {
+                    nextNoGround = noGroundLocations[i];
+                } else if (nextNoGround < 260) {
+                    nextNoGround = 2000;
+                }
+            }
+
+            for (i = 0; i < sections.length; i++) {
+                sections[i].center -= step;
+                sections[i].end -= step;
+                sections[i].start -= step;
+                if (sections[i].start < nextSection && sections[i].start > 300) {
+                    nextSection = sections[i].start;
+                }
+            }
+
+        // }
     }
 
 
 </script>
+<button style="float: right; clear: right", onclick="moveRight(1)"
+>
+RUN!
+</button>
 
 </body>
 </html>
